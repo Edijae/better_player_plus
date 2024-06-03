@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+
 import 'package:better_player_plus/better_player_plus.dart';
 import 'package:better_player_plus/src/configuration/better_player_controller_event.dart';
 import 'package:better_player_plus/src/controls/better_player_cupertino_controls.dart';
@@ -95,10 +96,8 @@ class _BetterPlayerWithControlsState extends State<BetterPlayerWithControls> {
       width: double.infinity,
       color: betterPlayerController
           .betterPlayerConfiguration.controlsConfiguration.backgroundColor,
-      child: AspectRatio(
-        aspectRatio: aspectRatio,
-        child: _buildPlayerWithControls(betterPlayerController, context),
-      ),
+      child: _buildPlayerWithControls(
+          betterPlayerController, context, aspectRatio),
     );
 
     if (betterPlayerController.betterPlayerConfiguration.expandToFill) {
@@ -109,7 +108,9 @@ class _BetterPlayerWithControlsState extends State<BetterPlayerWithControls> {
   }
 
   Container _buildPlayerWithControls(
-      BetterPlayerController betterPlayerController, BuildContext context) {
+      BetterPlayerController betterPlayerController,
+      BuildContext context,
+      double aspectRatio) {
     final configuration = betterPlayerController.betterPlayerConfiguration;
     var rotation = configuration.rotation;
 
@@ -130,11 +131,14 @@ class _BetterPlayerWithControlsState extends State<BetterPlayerWithControls> {
         fit: StackFit.passthrough,
         children: <Widget>[
           if (placeholderOnTop) _buildPlaceholder(betterPlayerController),
-          Transform.rotate(
-            angle: rotation * pi / 180,
-            child: _BetterPlayerVideoFitWidget(
-              betterPlayerController,
-              betterPlayerController.getFit(),
+          AspectRatio(
+            aspectRatio: aspectRatio,
+            child: Transform.rotate(
+              angle: rotation * pi / 180,
+              child: _BetterPlayerVideoFitWidget(
+                betterPlayerController,
+                betterPlayerController.getFit(),
+              ),
             ),
           ),
           betterPlayerController.betterPlayerConfiguration.overlay ??
